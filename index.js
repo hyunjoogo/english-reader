@@ -1,4 +1,4 @@
-const KAKAOAK_API_KEY = config.apikey;
+// const KAKAOAK_API_KEY = config.apikey;
 
 const enTransKr = document.querySelector(".enTransKr");
 
