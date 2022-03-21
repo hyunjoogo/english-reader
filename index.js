@@ -17,16 +17,16 @@ function getHistoryDataFromLocal() {
 
 // 번역만 하는 함수
 async function translateEnToKr(text) {
-  let response = await fetch(`https://dapi.kakao.com/v2/translation/translate?src_lang=en&target_lang=kr&query=${text}`, {
-    method: 'POST',
-    contentType: "application/x-www-form-urlencoded",
-    headers: {
-      "Authorization": `KakaoAK ${KAKAOAK_API_KEY}`
-    },
-  });
-
-  let result = await response.json();
-  enTransKr.textContent = result.translated_text[0][0];
+  // let response = await fetch(`https://dapi.kakao.com/v2/translation/translate?src_lang=en&target_lang=kr&query=${text}`, {
+  //   method: 'POST',
+  //   contentType: "application/x-www-form-urlencoded",
+  //   headers: {
+  //     "Authorization": `KakaoAK ${KAKAOAK_API_KEY}`
+  //   },
+  // });
+  //
+  // let result = await response.json();
+  // enTransKr.textContent = result.translated_text[0][0];
   addTransHistory(text);
 }
 
