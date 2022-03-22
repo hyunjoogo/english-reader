@@ -55,6 +55,7 @@ function displayText(text, id) {
   span.innerText = text;
   li.appendChild(span);
 
+
   button.innerText = "💡";
   li.appendChild(button);
   button.addEventListener('click', () => playText(text));
@@ -63,6 +64,7 @@ function displayText(text, id) {
   li.appendChild(button2);
   button2.addEventListener('click', () => deleteText(id));
 
+  li.setAttribute("date-set", id);
   history.appendChild(li);
 }
 
@@ -76,6 +78,9 @@ function playText(text) {
 // text 삭제
 function deleteText(id) {
   const result = transHistoryArray.filter(item => item.id !== id);
+  // console.log(history);
+  // const si = history.childNodes.filter(value => value === "li");
+  // console.log(si);
   transHistoryArray = result;
   localStorage.setItem("items", JSON.stringify(transHistoryArray));
   window.location.reload();
@@ -83,7 +88,7 @@ function deleteText(id) {
 
 
 // 전체 히스토리 삭제
-function removeAllHistory()  {
+function removeAllHistory() {
   localStorage.clear();
   window.location.reload();
 };
@@ -99,3 +104,9 @@ function spreadHistory() {
 spreadHistory();
 
 btn.addEventListener('click', () => translateEnToKr(textarea.value));
+
+
+const historyArray = [
+  {folderName: "F1", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
+  {folderName: "F2", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
+];
