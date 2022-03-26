@@ -1,0 +1,7 @@
+.folderIcon::before {
+    content: "📂";
+}
+.folderIcon.close::before {
+    content: "📁";
+}
+

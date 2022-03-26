@@ -6,6 +6,11 @@ const textarea = document.querySelector(".textarea");
 const btn = document.querySelector(".btn");
 const history = document.querySelector(".history");
 
+const historyArray = [
+  {folderName: "F1", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
+  {folderName: "F2", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
+];
+
 let transHistoryArray = getHistoryDataFromLocal();
 let lastId = transHistoryArray[transHistoryArray.length - 1]?.id || 0;
 
@@ -106,7 +111,4 @@ spreadHistory();
 btn.addEventListener('click', () => translateEnToKr(textarea.value));
 
 
-const historyArray = [
-  {folderName: "F1", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
-  {folderName: "F2", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
-];
+
