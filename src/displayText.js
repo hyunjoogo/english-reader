@@ -4,8 +4,7 @@ import { transHistoryArray } from "./index.js";
 
 export function displayText(targetElement, text, id) {
   const li = makeElement('li');
-  const span = makeElement('li', "", text);
-
+  const span = makeElement('span', "", text);
   const speakBtn = makeElement('button', "", "🗣", {
     func: () => playText(text)
   });

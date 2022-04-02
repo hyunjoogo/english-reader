@@ -16,3 +16,6 @@ a {
     content: "📁";
 }
 
+.content-list.close {
+    display: none;
+}

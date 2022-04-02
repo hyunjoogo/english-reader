@@ -42,14 +42,8 @@ function addTransHistory(text) {
   const timestamp = Date.now();
   const newContent = {id: timestamp, text: text.trim()};
   if (transHistoryArray[0]?.folderName === undefined) {
-    const newInput = {
-      folderName: "none",
-      contentList: [
-        {...newContent}
-      ],
-    };
+    const newInput = {folderName: "무제", contentList: [{...newContent}]};
     transHistoryArray.push(newInput);
-    console.log(transHistoryArray);
   } else {
     transHistoryArray[0].contentList.push({...newContent});
   }
@@ -74,7 +68,11 @@ function spreadHistory() {
     const iconWrapper = makeElement("div", 'iconWrapper');
     const folderBtn = makeElement("button", 'folderIcon', "", {
       eventType: 'click',
-      func: (element) => element.classList.toggle('close')
+      func: (element) => {
+        const list = document.querySelector('.content-list');
+        list.classList.toggle('close');
+        element.classList.toggle('close');
+      }
     });
     const folderName = makeElement("span", 'folderName', folder.folderName);
     folderWrapper.appendChild(iconWrapper);
