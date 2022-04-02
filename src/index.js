@@ -90,7 +90,9 @@ function playText(text) {
 
 // text 삭제
 function deleteText(id) {
-  transHistoryArray = transHistoryArray[0].contentList.filter(item => item.id !== id);
+  transHistoryArray.forEach(item => {
+    item.contentList = item.contentList.filter(item => item.id !== id);
+  })
   localStorage.setItem("items", JSON.stringify(transHistoryArray));
   window.location.reload();
 }
