@@ -59,21 +59,19 @@ function addTransHistory(text) {
     transHistoryArray[0].contentList.push({...newContent});
   }
   localStorage.setItem("items", JSON.stringify(transHistoryArray));
-  displayText(history, text, newContent.id);
+  console.log(historyWrapper);
+  displayText(historyWrapper, text, newContent.id);
 }
 
 // text 화면에 추가해주는 함수
 function displayText(targetElement, text, id) {
-  console.log(targetElement);
   const li = makeElement('li');
-  const span = makeElement('li', null, text);
+  const span = makeElement('li', "", text);
 
-  const speakBtn = makeElement('button', null, "🗣", {
-    eventType: 'click',
+  const speakBtn = makeElement('button', "", "🗣", {
     func: () => playText(text)
   });
-  const deleteBtn = makeElement('button', null, "❌", {
-    eventType: 'click',
+  const deleteBtn = makeElement('button', "", "❌", {
     func: () => deleteText(id)
   });
   li.appendChild(span);
@@ -106,6 +104,7 @@ function removeAllHistory() {
 
 // 초기화면 뿌려주는 함수
 function spreadHistory() {
+  console.log(transHistoryArray);
   transHistoryArray.forEach((folder) => {
     // 폴더목록
     // section > div > button / span (text)
@@ -122,11 +121,16 @@ function spreadHistory() {
     historyWrapper.appendChild(folderWrapper);
 
     // 컨텐츠들
-    folder.contentList.forEach(({text, id}) => {
-      const ul = document.createElement('ul');
-      displayText(ul, text, id);
-      historyWrapper.appendChild(ul);
-    })
+    folder.contentList.forEach(({text, id}, index) => {
+      if (index === 0) {
+        const ul = makeElement('ul', 'content-list');
+        displayText(ul, text, id);
+        historyWrapper.appendChild(ul);
+      } else {
+        const ul = document.querySelector('.content-list');
+        displayText(ul, text, id);
+      }
+    });
   });
 }
 
