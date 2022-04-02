@@ -1,6 +1,6 @@
 'use strict';
 
-export function makeElement(tagName, className, textContent, event) {
+function makeElement(tagName, className = null, textContent, event) {
   const element = document.createElement(tagName);
   element.className = className;
   if (textContent) {
@@ -11,3 +11,5 @@ export function makeElement(tagName, className, textContent, event) {
   }
   return element;
 };
+
+export default makeElement;

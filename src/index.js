@@ -1,14 +1,19 @@
+'use strict';
+
 // const KAKAOAK_API_KEY = config.apikey;
+
+import makeElement from "./makeElement.js";
 
 const enTransKr = document.querySelector(".enTransKr");
 
 const textarea = document.querySelector(".textarea");
 const btn = document.querySelector(".btn");
 const history = document.querySelector(".history");
+const historyWrapper = document.querySelector(".historyWrapper");
 
 const historyArray = [
-  {folderName: "F1", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
-  {folderName: "F2", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
+  {folderName: "F1", contentList: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
+  {folderName: "F2", contentList: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
 ];
 
 let transHistoryArray = getHistoryDataFromLocal();
@@ -35,42 +40,47 @@ async function translateEnToKr(text) {
   addTransHistory(text);
 }
 
-// Auto Increment 함수
-function* infinity() {
-  while (true) {
-    yield ++lastId;
-  }
-}
-
 // 히스토리에 추가해주는 함수
 function addTransHistory(text) {
-  const iter = infinity();
-  const newInput = {id: iter.next().value, text: text.trim()};
-  transHistoryArray.push(newInput);
+  // TODO 이 구조를 바꾸어줘야겠군
+  //   {folderName: "F1", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
+  const timestamp = Date.now();
+  const newContent = {id: timestamp, text: text.trim()};
+  if (transHistoryArray[0]?.folderName === undefined) {
+    const newInput = {
+      folderName: "none",
+      contentList: [
+        {...newContent}
+      ],
+    };
+    transHistoryArray.push(newInput);
+    console.log(transHistoryArray);
+  } else {
+    transHistoryArray[0].contentList.push({...newContent});
+  }
   localStorage.setItem("items", JSON.stringify(transHistoryArray));
-  displayText(text, newInput.id);
+  displayText(history, text, newContent.id);
 }
 
 // text 화면에 추가해주는 함수
-function displayText(text, id) {
-  const li = document.createElement("li");
-  const span = document.createElement("span");
-  const button = document.createElement("button");
-  const button2 = document.createElement("button");
-  span.innerText = text;
+function displayText(targetElement, text, id) {
+  console.log(targetElement);
+  const li = makeElement('li');
+  const span = makeElement('li', null, text);
+
+  const speakBtn = makeElement('button', null, "🗣", {
+    eventType: 'click',
+    func: () => playText(text)
+  });
+  const deleteBtn = makeElement('button', null, "❌", {
+    eventType: 'click',
+    func: () => deleteText(id)
+  });
   li.appendChild(span);
-
-
-  button.innerText = "💡";
-  li.appendChild(button);
-  button.addEventListener('click', () => playText(text));
-
-  button2.innerText = "❌";
-  li.appendChild(button2);
-  button2.addEventListener('click', () => deleteText(id));
-
+  li.appendChild(speakBtn);
+  li.appendChild(deleteBtn);
   li.setAttribute("date-set", id);
-  history.appendChild(li);
+  targetElement.appendChild(li);
 }
 
 // text 읽어주는 함수
@@ -82,11 +92,7 @@ function playText(text) {
 
 // text 삭제
 function deleteText(id) {
-  const result = transHistoryArray.filter(item => item.id !== id);
-  // console.log(history);
-  // const si = history.childNodes.filter(value => value === "li");
-  // console.log(si);
-  transHistoryArray = result;
+  transHistoryArray = transHistoryArray[0].contentList.filter(item => item.id !== id);
   localStorage.setItem("items", JSON.stringify(transHistoryArray));
   window.location.reload();
 }
@@ -100,9 +106,27 @@ function removeAllHistory() {
 
 // 초기화면 뿌려주는 함수
 function spreadHistory() {
-  console.log(transHistoryArray);
-  transHistoryArray.map(({text, id}) => {
-    displayText(text, id);
+  transHistoryArray.forEach((folder) => {
+    // 폴더목록
+    // section > div > button / span (text)
+    const folderWrapper = makeElement('div', 'folderWrapper');
+    const iconWrapper = makeElement("div", 'iconWrapper');
+    const folderBtn = makeElement("button", 'folderIcon', "", {
+      eventType: 'click',
+      func: (element) => element.classList.toggle('close')
+    });
+    const folderName = makeElement("span", 'folderName', folder.folderName);
+    folderWrapper.appendChild(iconWrapper);
+    iconWrapper.appendChild(folderBtn);
+    iconWrapper.appendChild(folderName);
+    historyWrapper.appendChild(folderWrapper);
+
+    // 컨텐츠들
+    folder.contentList.forEach(({text, id}) => {
+      const ul = document.createElement('ul');
+      displayText(ul, text, id);
+      historyWrapper.appendChild(ul);
+    })
   });
 }
 
