@@ -3,21 +3,18 @@
 // const KAKAOAK_API_KEY = config.apikey;
 
 import makeElement from "./makeElement.js";
+import { displayText } from "./displayText.js";
 
 const enTransKr = document.querySelector(".enTransKr");
 
 const textarea = document.querySelector(".textarea");
 const btn = document.querySelector(".btn");
 const history = document.querySelector(".history");
+console.log('tkd');
 const historyWrapper = document.querySelector(".historyWrapper");
 
-const historyArray = [
-  {folderName: "F1", contentList: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
-  {folderName: "F2", contentList: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
-];
 
-let transHistoryArray = getHistoryDataFromLocal();
-let lastId = transHistoryArray[transHistoryArray.length - 1]?.id || 0;
+export let transHistoryArray = getHistoryDataFromLocal();
 
 // localStorage에서 기존 데이터 가지고 오기
 function getHistoryDataFromLocal() {
@@ -42,8 +39,6 @@ async function translateEnToKr(text) {
 
 // 히스토리에 추가해주는 함수
 function addTransHistory(text) {
-  // TODO 이 구조를 바꾸어줘야겠군
-  //   {folderName: "F1", content: [{id: 1, text: "1"}, {id: 2, text: "2"}]},
   const timestamp = Date.now();
   const newContent = {id: timestamp, text: text.trim()};
   if (transHistoryArray[0]?.folderName === undefined) {
@@ -59,44 +54,9 @@ function addTransHistory(text) {
     transHistoryArray[0].contentList.push({...newContent});
   }
   localStorage.setItem("items", JSON.stringify(transHistoryArray));
-  console.log(historyWrapper);
-  displayText(historyWrapper, text, newContent.id);
+  const list = document.querySelector('.content-list');
+  displayText(list, text, newContent.id);
 }
-
-// text 화면에 추가해주는 함수
-function displayText(targetElement, text, id) {
-  const li = makeElement('li');
-  const span = makeElement('li', "", text);
-
-  const speakBtn = makeElement('button', "", "🗣", {
-    func: () => playText(text)
-  });
-  const deleteBtn = makeElement('button', "", "❌", {
-    func: () => deleteText(id)
-  });
-  li.appendChild(span);
-  li.appendChild(speakBtn);
-  li.appendChild(deleteBtn);
-  li.setAttribute("date-set", id);
-  targetElement.appendChild(li);
-}
-
-// text 읽어주는 함수
-function playText(text) {
-  const URL = `https://tts-translate.kakao.com/read?format=mpeg&lang=en&txt=${text}`;
-  const audioObj = new Audio(URL);
-  audioObj.play();
-}
-
-// text 삭제
-function deleteText(id) {
-  transHistoryArray.forEach(item => {
-    item.contentList = item.contentList.filter(item => item.id !== id);
-  })
-  localStorage.setItem("items", JSON.stringify(transHistoryArray));
-  window.location.reload();
-}
-
 
 // 전체 히스토리 삭제
 function removeAllHistory() {
@@ -128,11 +88,13 @@ function spreadHistory() {
         const ul = makeElement('ul', 'content-list');
         displayText(ul, text, id);
         historyWrapper.appendChild(ul);
+
       } else {
         const ul = document.querySelector('.content-list');
         displayText(ul, text, id);
       }
     });
+
   });
 }
 
